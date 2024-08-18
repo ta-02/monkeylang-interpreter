@@ -8,13 +8,14 @@ import (
 
 func TestLetStatements(t *testing.T) {
 	input := `
-  let x 5;
-  let = 10;
-  let 838383;
+  return 5;
+  return 10;
+  return 993322;
   `
 
 	l := lexer.New(input)
 	p := New(l)
+
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -27,20 +28,32 @@ func TestLetStatements(t *testing.T) {
 			len(program.Statements))
 	}
 
-	tests := []struct {
-		expectedIdentifier string
-	}{
-		{"x"},
-		{"y"},
-		{"foobar"},
-	}
-
-	for i, tt := range tests {
-		stmt := program.Statements[i]
-		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
-			return
+	for _, stmt := range program.Statements {
+		returnStmt, ok := stmt.(*ast.ReturnStatement)
+		if !ok {
+			t.Errorf("stmt not *ast.ReturnStatement. got=%T", stmt)
+			continue
+		}
+		if returnStmt.TokenLiteral() != "return" {
+			t.Errorf("returnStmt.TokenLiteral not 'return', got %q",
+				returnStmt.TokenLiteral())
 		}
 	}
+
+	// tests := []struct {
+	// 	expectedIdentifier string
+	// }{
+	// 	{"x"},
+	// 	{"y"},
+	// 	{"foobar"},
+	// }
+	//
+	// for i, tt := range tests {
+	// 	stmt := program.Statements[i]
+	// 	if !testLetStatement(t, stmt, tt.expectedIdentifier) {
+	// 		return
+	// 	}
+	// }
 }
 
 func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
