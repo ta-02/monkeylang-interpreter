@@ -1,14 +1,3 @@
-package parser
-
-import (
-	"fmt"
-	"strconv"
-
-	"github.com/ta-02/c-like-interpreter/ast"
-	"github.com/ta-02/c-like-interpreter/lexer"
-	"github.com/ta-02/c-like-interpreter/token"
-)
-
 const (
 	_ int = iota
 	LOWEST
@@ -49,6 +38,9 @@ type (
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{l: l, errors: []string{}}
 
+	p.nextToken()
+	p.nextToken()
+
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
@@ -70,9 +62,6 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
-
-	p.nextToken()
-	p.nextToken()
 
 	return p
 }
@@ -135,7 +124,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 
 	stmt.Value = p.parseExpression(LOWEST)
 
-	if !p.curTokenIs(token.SEMICOLON) {
+	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
 
