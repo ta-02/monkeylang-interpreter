@@ -33,6 +33,10 @@ type Error struct {
 	Message string
 }
 
+type Environmnt struct {
+	store map[string]Object
+}
+
 type Null struct{}
 
 func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
@@ -54,3 +58,18 @@ func (rv *ReturnValue) Inspect() string { return rv.Value.Inspect() }
 func (e *Error) Type() ObjectType { return ERROR_OBJ }
 
 func (e *Error) Inspect() string { return "ERROR: " + e.Message }
+
+func NewEnvironment() *Environmnt {
+	s := make(map[string]Object)
+	return &Environmnt{store: s}
+}
+
+func (e *Environmnt) Get(name string) (Object, bool) {
+	obj, ok := e.store[name]
+	return obj, ok
+}
+
+func (e *Environmnt) Set(name string, val Object) Object {
+	e.store[name] = val
+	return val
+}
