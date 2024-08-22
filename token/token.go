@@ -24,6 +24,7 @@ const (
 	NOT_EQ    = "!="
 	COMMA     = ","
 	SEMICOLON = ";"
+	COLON     = ":"
 	LPAREN    = "("
 	RPAREN    = ")"
 	LBRACE    = "{"
