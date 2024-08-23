@@ -126,7 +126,6 @@ func (p *Parser) parseStatment() ast.Statement {
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
 	stmt := &ast.LetStatement{Token: p.curToken}
-
 	if !p.exceptPeek(token.IDENT) {
 		return nil
 	}
